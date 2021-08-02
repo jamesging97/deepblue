@@ -1,37 +1,115 @@
-## Welcome to GitHub Pages
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<style>
+  html, body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+  }
+  canvas {
+      background-color:#121d61;
+      //background-image: url(ocean_backround.jpg);
+      width: 100%;
+      height: 100%;
+  }
+  img {
+    max-width:100%;
+    height:auto;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+//document.write("x =", screen.width, " y = ", screen.height);
+var myGamePiece = [],
+    fish_image = ["white_fish.gif", "orange_fish.gif", "blue_fish.gif"],
+    fish_amount = Math.ceil(Math.random() * 14),
+    canvas_width = window.innerWidth, canvas_height = window.innerHeight,
+    background = document.createElement("canvas");
 
-You can use the [editor on GitHub](https://github.com/jamesging97/deepblue/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+function startGame() {
+    for (i = 0; i < fish_amount; ++i)
+    {
+          myGamePiece.push(new component(10, 8, fish_image[Math.floor(Math.random() * fish_image.length)]));
+          myGamePiece[i].initialSpawn();
+    }
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+    myGameArea.start();
+    background.width = canvas_width;
+    background.height = canvas_height;
+    background.getContext("2d").drawImage("ocean_backround.png",
+      canvas_height,
+      canvas_width);
+}
 
-### Markdown
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = canvas_width;
+        this.canvas.height = canvas_height;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 100);
+        },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval);
+    }
+}
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+function component(width, height, image) {
 
-```markdown
-Syntax highlighted code block
+    this.image = new Image();
+    this.image.src = image;
+    this.width = width;
+    this.height = height;
+    this.x = 0;
+    this.y = 0;
+    this.initialSpawn = function() {
+        this.x += Math.floor(Math.random() * canvas_width);
+        this.y += Math.floor(Math.random() * canvas_height);
+    }
+    this.update = function() {
+        ctx = myGameArea.context;
+        ctx.drawImage(this.image,
+          this.x,
+          this.y,
+          this.width, this.height);
+    }
+    this.newPos = function() {
 
-# Header 1
-## Header 2
-### Header 3
+        if (Math.random() > 0.5 && (this.x - 1 > canvas_height * 0.09))
+        this.x -= 1;
+        else if (this.x + 1 < canvas_width - canvas_height * 0.09)
+                this.x += 1;
+        if (Math.random() > 0.5 && (this.y - 1 > canvas_height * 0.09))
+        this.y -= 1;
+        else if (this.y + 1 < canvas_height - canvas_height * 0.09)
+        this.y += 1;
+    }
+}
 
-- Bulleted
-- List
+function updateGameArea() {
+  myGameArea.clear();
+  for (i = 0; i < myGamePiece.length; ++i)
+  {
+    movement_amount = Math.floor(Math.random() * 600);
+    for (j = 0; j < movement_amount; ++j)
+    {
+      myGamePiece[i].newPos();
+      myGamePiece[i].update();
+    }
+  }
+}
 
-1. Numbered
-2. List
+</script>
 
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/jamesging97/deepblue/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+</body>
+</html>
