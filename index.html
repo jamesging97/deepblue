@@ -101,7 +101,7 @@ function updateGameArea() {
   myGameArea.clear();
   for (i = 0; i < myGamePiece.length; ++i)
   {
-    movement_amount = Math.floor(Math.random() * 50);
+    movement_amount = Math.floor(Math.random());
     for (j = 0; j < movement_amount; ++j)
     {
       myGamePiece[i].newPos();
